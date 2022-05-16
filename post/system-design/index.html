@@ -33,7 +33,7 @@
   <meta itemprop="name" content="System Design">
 <meta itemprop="description" content="A system for serving blogs to massive readers (10k tps)"><meta itemprop="datePublished" content="2022-05-15T20:47:28+07:00" />
 <meta itemprop="dateModified" content="2022-05-15T20:47:28+07:00" />
-<meta itemprop="wordCount" content="517">
+<meta itemprop="wordCount" content="1178">
 <meta itemprop="keywords" content="" />
 </head>
 <body>
@@ -282,7 +282,7 @@
   </svg>
 </div>
 
-  <span>3 minutes</span>
+  <span>6 minutes</span>
 </div>
 
 <div class="published-date">
@@ -297,7 +297,7 @@
   <span>May 15, 2022</span>
 </div>
 
-<p>Do anyone just want their blog to be read by 1 user at the same time? The answer is actually &ldquo;No&rdquo;. System design is required to be used with a large number of people. In this post, let&rsquo;s assume that the number of users is 10 thousand.</p>
+<p>Do anyone just want their blog to be read by 1 user at the same time? The answer is actually <strong>&ldquo;No&rdquo;</strong>. System design is required to be used with a large number of people. In this post, let&rsquo;s assume that the number of users is 10 thousand.</p>
 <br/>
 <h2>Table of Contents:</h2>
 <ul>
@@ -311,17 +311,17 @@
 <ul>
 <li><a href="#system-for-1-user">System for 1 user</a></li>
 <li><a href="#system-for-500-users">System for 500 users</a></li>
-<li><a href="#system-for-1k-users">System for 10k users</a> <br/><br/> </li>
+<li><a href="#system-for-1k-users">System for 10k users</a> <br/><br/></li>
 </ul>
 </li>
-<li><a href="#reference:">Reference:</a>
+<li><a href="#reference:">Reference:</a></li>
 </ul>
 <br/>
 <h2 id="problems-and-solutions">Problems and Solutions:</h2>
 <h3 id="problems">Problems</h3>
-<p>Let's image that there are 10 thousand users. Then what may happens:</p>
+<p>Let&rsquo;s image that there are 10 thousand users. Then what may happens:</p>
 <ul>
-<li>Massive users may try to access at the same time, and even access different post in the website. It required the system to carry out a large number of different tasks.</li>
+<li>Massive users may access at the same time, and access different post in the website. It required the system to carry out a large number of different tasks.</li>
 <li>The web may be too slow, or even crashed.</li>
 <li>We may need a larger database to stored 10k user account, user history, &hellip;</li>
 <li>Also, with the problem of distance, users may access webpage with long delay.</li>
@@ -329,10 +329,21 @@
 <h3 id="solutions">Solutions</h3>
 <p>In order to extend your system: Here, we can either scale up (vertically) or scale out (horizontally):</p>
 <ul>
-<li><strong>Scaling up (vertically):</strong> By paying for better RAM, CPU chip, memory storage, hardware accelerator, GPU, &hellip;, It would not only be expensive, but it would also reach a limit when we try to upgrade to state-of-the-art hardware.</li>
-<li><strong>Scaling out (horizontally):</strong> Can be done by paying for second, third, &hellip;. servers. With a few code configuration, the system can be scaled out easily.</li>
+<li><strong>Scaling up (vertically):</strong> By paying for better RAM, CPU chip, memory storage, hardware accelerator, &hellip;, It would not only be expensive, but it would also reach a limit when we try to upgrade to state-of-the-art hardware. <br/><br/>
+<ul>
+<li><u>CPU:</u> quad-core, octa-core, &hellip; with multi-thread that can process many requests at the same time (Intel Core i9-12th has totally 16 cores (8 for performance cores, the others for efficient cores) and 24 thread (3 per performance core))</li>
+<li><u>Memory:</u> <br/><br/>
+<ul>
+<li>HDD (Hard Disk Drive), which is a magnetic spin disk, that can store a lot of data, with low budget. HDD ussually use SATA (Serial Advanced Technology Attachment) as a default interface for most desktop and laptop hard drives. But it is quite slow.</li>
+<li>SSD (Solid State Drive), which store data on solid-state flash memory, is much faster than HDD (because it don&rsquo;t need to spin mechanically). However, its main cons is price, it take more money to buy equal-sized memory in SSD compared to HDD. (The fastest SSD is now using PCI Express (PCIe) interface).</li>
+<li>Both HDD and SDD are non-volatile data storage devices, which means that when we turn them off, all data will be maintain.</li>
 </ul>
-<h2 id="extend-system-from-begining-brbr">Extend system from begining:</h2>
+</li>
+</ul>
+</li>
+<li><strong>Scaling out (horizontally):</strong> Can be done by paying for second, third, &hellip;. servers. With a few code configuration, the system can be scaled out easily. because Scaling out is cheaper, it is prior to be used in many system design. I will show it detailly in below section.</li>
+</ul>
+<h2 id="extend-system-from-begining">Extend system from begining:</h2>
 <h3 id="system-for-1-user">System for 1 user</h3>
 <p>First of all, a basic system is similar to this:</p>
 <p><img src="../images/1-user.png" alt="1 user"></p>
@@ -341,27 +352,57 @@
 <p>Then, the browser will send HTTP request to the IP address, which recieved from DNS. And waiting for the response (such as <strong>200 OK</strong>, with HTML document format or JSON, or even XML format).</p>
 <h3 id="system-for-500-users">System for 500 users</h3>
 <p><img src="../images/500-users.png" alt="500 users"></p>
+<p>Well, with 500 users, you are now a little bit famous. Let&rsquo;s image that when you post something on your webpage, and it is not correctly, then 100 reader email you to discuss about that wrong content. At that time, for keeping reader to keep in touch with your blog, you need to reply one-by-one through email with the nearly-same explanation.</p>
+<p>That will be crazy, so at this scale, I highly recommend you to store reader account, and enable chat feature, for reader to share their idea freely (of course, you don&rsquo;t need to reply mail for serveral time  ✨)</p>
 <p>In a simpliest way, we just scale out our system by putting database and our server separately. This action may slightly increase latency between app server and Database server</p>
 <h3 id="system-for-10k-users">System for 10k users</h3>
 <p><img src="../images/10k-users.png" alt="10k users"></p>
 <p>With large number of users, we may need:</p>
 <ul>
-<li>a load balancer, it can help increase security (such as against DDoS attacks)</li>
-<li>scale our Database. With Master Database for handling write requests, and slave Database for handling read requests. This has some advantages:
-<br/><br/>
+<li><strong>Scale out Server:</strong> <br/><br/>
 <ul>
-<li>handle more request</li>
-<li>When backuping, reporting, there is no need to shut the server off. We can do it on the slave DataBase.</li>
-<li>If one of these DataBase crashes, another will carry out (for example, if master DataBase crash, one of his slave will be promoted to master)</li>
+<li>Having to serve 10k user with 1 server may be exhausted. Just like, 1 staff have to act as a waiter, a cashier, a cook, and server at peek hour 😱 . So, what if we have 2 or 3 or more server 😇, your server will give you many thanks. With multiple server, one can be for serving media (gif, picture, some post material), another can be used for static web component, the others can be anything to share tasks.</li>
 </ul>
 </li>
-<li>Using cache for speeding up performance (for example, if there is a hot trend post, and a large number of user want to access that blog, there is no need to look up the DataBase and return HTML document for many time, we can use Cache for fast returning)</li>
-</ul>
-<h2>Reference:</h2>
+<li>Adding a <strong>Load Balancer</strong>: (used for &gt; 2 servers) <br/><br/>
 <ul>
-<li><a href="http://www.ines-panker.com/2019/08/03/scaling-1-to-10-000-users.html" target="_blank" rel="noopener noreferrer">Link Scale Your System Part 1</a></li>
-<li><a href="http://www.ines-panker.com/2019/08/10/scaling-100-000-to-500-M-users.html" target="_blank" rel="noopener noreferrer">Link Scale Your System Part 2</a></li>
-<li><a href="https://levelup.gitconnected.com/how-to-design-a-system-to-scale-to-your-first-100-million-users-4450a2f9703d" target="_blank" rel="noopener noreferrer">How to design a system to scale to your first 100 million users</a></li>
+<li><u>How it work:</u> When a reader type in browser like &ldquo;<a href="https://www.Tu-blog.com">www.Tu-blog.com</a>&rdquo; for example. Now, DNS will not return the IP of our server, it will return the IP address of our Load Balancer, which is likely a black box. This black box is responsible for distributing incoming user to proper server (based on tasks of each server or the distance between user and the server location)</li>
+<li>With a blog website, Load Balancer can be simply implemented with Round Robin.</li>
+<li>It can also help increase security (such as against DDoS attacks)</li>
+</ul>
+</li>
+<li><strong>Scale out Database:</strong> We have 2 options:
+<ol>
+<li>We just need 1 more Database:<br/><br/>
+<ul>
+<li>To backup, when one of our Database overload (super high latency), there is still one that is alive.</li>
+<li>Disadvantage of this is when user try to write to Database (write a comment, vote a post, &hellip;), it may take more time to write to 2 database. However, despite a little bit time, we can ensure that our website can work day-and-night with low probability of overloading problem.</li>
+</ul>
+</li>
+<li>Like in the picture, with Master Database for handling write requests, and 2 slave Databases for handling read requests. This has some advantages: <br/><br/>
+<ul>
+<li>By seperating read operation and write operation, it can process more request per time, so it can improve performance (speed) and even prevent overloading on one database.</li>
+<li>When backuping, reporting, there is no need to shut the server off. We can do it on the slave DataBase.</li>
+<li>If one of these DataBase crashes, another will carry out (for example, if master DataBase crash, one of his slave will be promoted to master, else if one slave Database crash, your system will also safe) <br/><br/></li>
+</ul>
+</li>
+</ol>
+<ul>
+<li>In my personal view, option 2 is a better choice, but you should take notice of your budget (maintaining 3 database is more expensive) and option 2 require more coding. However, if we combine option 1 with cache (I will discuss below), It would be fine.</li>
+</ul>
+</li>
+<li><strong>Using cache:</strong><br/><br/>
+<ul>
+<li>Cache is used for speeding up performance by quickly retrieving data.</li>
+<li>For example, if there is a hot trend post, and a large number of user want to access that post, there is no need to look up the DataBase n times and return HTML document for n times, we can use Cache for to remeber the return data, so that the 2nd, 3rd, &hellip; n-th reader can be returned faster.</li>
+</ul>
+</li>
+</ul>
+<h2 id="reference">Reference:</h2>
+<ul>
+<li><a href="http://www.ines-panker.com/2019/08/03/scaling-1-to-10-000-users.html">Scale Your System Part 1</a></li>
+<li><a href="http://www.ines-panker.com/2019/08/10/scaling-100-000-to-500-M-users.html">Scale Your System Part 2</a></li>
+<li><a href="https://www.youtube.com/watch?v=-W9F__D3oY4">Scalability Harvard Web Development David Malan</a></li>
 </ul>
 
     </main>
