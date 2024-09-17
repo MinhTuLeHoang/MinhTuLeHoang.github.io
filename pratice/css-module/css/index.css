@@ -94,4 +94,8 @@ h2 {
 	.tabContainer {
 		width: 100%;
 	}
+
+	body {
+		margin: 1em 2em;
+	}
 }
