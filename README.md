@@ -12,4 +12,4 @@ Cheers, ✨
 
 # Access my blog:
 
-[Minh Tú Lê Hoàng Blog](https://minhtulehoang.github.io/)
+[Minh Tú Lê Hoàng Blog](https://minhtulehoang.github.io/blogs)
