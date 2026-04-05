@@ -1,0 +1,106 @@
+body {
+	font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+	margin: 1em;
+	margin-top: 0px;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+}
+
+nav {
+	width: 100%;
+}
+
+h1 {
+	font-size: 1.75em;
+}
+
+h2 {
+	font-size: 1.25em;
+}
+
+.grid {
+	width: 100%;
+}
+
+.tabContainer {
+	box-sizing: border-box;
+	width: 33.33%;
+	float: left;
+	padding: 0.5em;
+}
+.tab {
+	border: solid black 1px;
+}
+
+.label {
+	float: right;
+	border: solid black 1px;
+	border-top: 0;
+	border-right: 0;
+	margin: 0;
+	padding: 4px 16px;
+	width: 5em;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+.text {
+	clear: right;
+	padding: 0px 1em;
+	padding-top: 0.5em;
+}
+
+#chicken {
+	background-color: aliceblue;
+}
+#chicken .label {
+	background-color: lightblue;
+	color: white;
+}
+
+#beef {
+	background-color: bisque;
+}
+#beef .label {
+	background-color: burlywood;
+	color: white;
+}
+
+#sushi {
+	background-color: pink;
+}
+#sushi .label {
+	background-color: palevioletred;
+	color: white;
+}
+
+/* Laptop */
+@media (min-width: 992px) {
+	.tabContainer {
+		width: 33%;
+	}
+}
+
+/* Tablet */
+@media (min-width: 768px) and (max-width: 991px) {
+	.tabContainer {
+		width: 50%;
+	}
+
+	.tabContainer:last-child {
+		width: 100%;
+	}
+}
+
+/* Mobile phone */
+@media (max-width: 767px) {
+	.tabContainer {
+		width: 100%;
+	}
+
+	body {
+		margin: 1em 2em;
+	}
+}
